@@ -1,24 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import Navigationbar from './Components/Layout/Navigationbar';
+import Login from './Components/Pages/Login';
+import './App.css'
+import { Redirect, Route, Switch } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import Inbox from './Components/Pages/Inbox';
+import ComposeMail from './Components/Pages/ComoseMail';
+import Sent from './Components/Pages/Sent';
+import Footer from './Components/Layout/Footer';
+
+
+
 
 function App() {
+  const token = useSelector(state => state.authentication.token)
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      {token && <Navigationbar />}
+      <div>
+        <Switch>
+          <Route exact path='/'>
+            <Login />
+          </Route>
+          <Route exact path='/composemail'>
+            {token && <ComposeMail />}
+            {!token && <Redirect to='/' />}
+          </Route>
+          <Route exact path='/sent'>
+            {token && <Sent />}
+            {!token && <Redirect to='/' />}
+          </Route>
+          <Route exact path='/inbox'>
+            {token && <Inbox />}
+            {!token && <Redirect to='/' />}
+          </Route>
+        </Switch>
+        {token && <Footer />}
+      </div>
+    </>
   );
 }
 
